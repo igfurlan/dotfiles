@@ -3,5 +3,6 @@
 /.teller.yml
 /devbox.*
 /gcloud
-/install.sh
+/ubuntu-install.sh
 /.git
+README.md
