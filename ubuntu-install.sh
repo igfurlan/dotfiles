@@ -32,6 +32,9 @@ brew install font-fira-code
 # neovim
 brew install neovim
 
+# k9s
+brew install derailed/k9s/k9s
+
 # starship
 curl -sS https://starship.rs/install.sh | sh
 

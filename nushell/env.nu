@@ -8,7 +8,7 @@ $env.config.buffer_editor = "vi"
 
 # PATH
 use std "path add"
-path add /home/linuxbrew/.linuxbrew/
+path add /home/linuxbrew/.linuxbrew/bin/
 
 mkdir ~/.cache/starship
 starship init nu | save -f ~/.cache/starship/init.nu
