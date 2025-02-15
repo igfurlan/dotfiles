@@ -1,7 +1,7 @@
 sudo apt update
 
 # GNU stow
-sudo apt -y install stow && sudo apt install curl -y && sudo apt install yq -y
+sudo apt -y install stow && sudo apt install curl
 
 # brew package manager
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
