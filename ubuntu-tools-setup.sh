@@ -1,19 +1,19 @@
 sudo apt update
 
 # GNU stow
-sudo apt -y install stow && sudo apt install curl -y && sudo apt install yq -y && sudo apt install btop -y
+sudo apt install stow curl zsh yq btop net-tools -y
 
 # brew package manager
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 echo >> /home/igfurlan/.bashrc
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/igfurlan/.bashrc
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-sudo apt-get install build-essential
-brew install gcc
+sudo apt-get install build-essential -y
+brew install gcc 
 
 # nushell
-brew install nushell
-sudo cp /home/linuxbrew/.linuxbrew/bin/nu /usr/local/bin/nu
+#brew install nushell
+#sudo cp /home/linuxbrew/.linuxbrew/bin/nu /usr/local/bin/nu
 
 # bat
 sudo apt install bat
@@ -36,5 +36,4 @@ brew install neovim
 curl -sS https://starship.rs/install.sh | sh
 
 # devbox
-curl -fsSL https://get.jetify.com/devbox | bash
-
+#curl -fsSL https://get.jetify.com/devbox | bash
