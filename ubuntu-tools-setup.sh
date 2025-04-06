@@ -1,15 +1,15 @@
 sudo apt update
 
 # GNU stow
-sudo apt -y install stow && sudo apt install curl
+sudo apt install stow curl zsh yq -y
 
 # brew package manager
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 echo >> /home/igfurlan/.bashrc
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/igfurlan/.bashrc
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-sudo apt-get install build-essential
-brew install gcc
+sudo apt-get install build-essential -y
+brew install gcc 
 
 # nushell
 #brew install nushell
