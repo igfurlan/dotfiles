@@ -12,8 +12,8 @@ sudo apt-get install build-essential
 brew install gcc
 
 # nushell
-brew install nushell
-sudo cp /home/linuxbrew/.linuxbrew/bin/nu /usr/local/bin/nu
+#brew install nushell
+#sudo cp /home/linuxbrew/.linuxbrew/bin/nu /usr/local/bin/nu
 
 # bat
 sudo apt install bat
@@ -36,5 +36,5 @@ brew install neovim
 curl -sS https://starship.rs/install.sh | sh
 
 # devbox
-curl -fsSL https://get.jetify.com/devbox | bash
+#curl -fsSL https://get.jetify.com/devbox | bash
 
