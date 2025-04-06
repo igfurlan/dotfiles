@@ -32,4 +32,11 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
+### Aliases
+alias lt="eza --tree --level=2 --long --icons --git"
+alias ll="ls -l"
+alias fzfp='fzf -m --preview "batcat --style numbers --color always {}"'
+alias cat="batcat --paging never --style plain"
+
+### Load starship
 eval "$(starship init zsh)"
