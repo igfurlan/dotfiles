@@ -1,7 +1,7 @@
 sudo apt update
 
 # GNU stow
-sudo apt install stow curl zsh yq -y
+sudo apt install stow curl zsh yq btop net-tools -y
 
 # brew package manager
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -37,4 +37,3 @@ curl -sS https://starship.rs/install.sh | sh
 
 # devbox
 #curl -fsSL https://get.jetify.com/devbox | bash
-
