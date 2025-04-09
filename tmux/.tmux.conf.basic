@@ -1,0 +1,60 @@
+set-option -g status-position top
+#set -g mouse on
+
+# Plugins
+set -g @plugin 'catppuccin/tmux#v2.1.2'
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+
+
+set -g @catppuccin_flavor 'frappe' # latte, frappe, macchiato or mocha
+
+# Set the prefix to Ctrl-a
+set -g prefix C-a
+set -g base-index 1              # start indexing windows at 1 instead of 0
+set -g renumber-windows on		 # renumber all windows when any window is closed
+set -g pane-active-border-style 'fg=magenta,bg=default'
+set -g pane-border-style 'fg=brightblack,bg=default'
+set -g pane-border-format "#{pane_index} #{pane_title}"
+set -g status-left ""
+set -g status-right "#{E:@catppuccin_status_application} #{E:@catppuccin_status_session}"
+set -g default-terminal "tmux-256color"
+set -ag terminal-overrides ",xterm-256color:RGB"
+setw -g mode-keys vi
+set-option -s set-clipboard off
+
+# Catppuccin design
+set -g @catppuccin_window_left_separator ""
+set -g @catppuccin_window_right_separator " "
+set -g @catppuccin_window_middle_separator " █"
+set -g @catppuccin_window_number_position "right"
+set -g @catppuccin_window_default_fill "number"
+set -g @catppuccin_window_default_text "#W"
+set -g @catppuccin_window_current_fill "number"
+set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),}"
+set -g @catppuccin_status_modules_right "directory date_time"
+set -g @catppuccin_status_modules_left "session"
+set -g @catppuccin_status_left_separator  " "
+set -g @catppuccin_status_right_separator " "
+set -g @catppuccin_status_right_separator_inverse "no"
+set -g @catppuccin_status_fill "icon"
+set -g @catppuccin_status_connect_separator "no"
+set -g @catppuccin_directory_text "#{b:pane_current_path}"
+set -g @catppuccin_meetings_text "#($HOME/.config/tmux/scripts/cal.sh)"
+set -g @catppuccin_date_time_text "%H:%M"
+
+# Remove the old prefix
+unbind C-b
+unbind -T copy-mode-vi Enter
+
+# Send Ctrl+a to applications by pressing it twice
+bind C-a send-prefix
+bind P paste-buffer
+bind-key -T copy-mode-vi v send-keys -X begin-selection
+bind-key -T copy-mode-vi y send-keys -X rectangle-toggle
+bind-key -T copy-mode-vi Enter send-keys -X copy-pipe-and-cancel 'xclip -se c -i'
+bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel 'xclip -se c -i'
+
+
+# Init the tpm plugin
+run '~/.tmux/plugins/tpm/tpm'
