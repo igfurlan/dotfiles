@@ -85,8 +85,9 @@ symbol = " "
 disabled = true
 
 [kubernetes]
-disabled = true
-#detect_extensions = ['kubectl','oc','kubectx','kubens']
-#format = '[$symbol($user in)()](bold blue)'
-#symbol = '☸  '
+disabled = false
+#detect_extensions = ['kubectl','oc','kubectx','kubens','k3s']
+symbol = '☸  '
+format = '[$symbol($user in )()](bold blue)'
 
+# https://starship.rs/presets/
