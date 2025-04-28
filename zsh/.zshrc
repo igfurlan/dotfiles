@@ -43,3 +43,8 @@ eval "$(starship init zsh)"
 
 ### Environment variables
 export KUBECONFIG=/home/igfurlan/.kube/config
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /home/igfurlan/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
