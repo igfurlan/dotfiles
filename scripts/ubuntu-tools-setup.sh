@@ -8,8 +8,8 @@ sudo apt install bat
 mkdir -p ~/.local/bin
 ln -s /usr/bin/batcat ~/.local/bin/bat
 
-# eza & fzf
-sudo apt install fzf eza -y
+# eza 
+sudo apt install eza -y
 
 # starship
 curl -sS https://starship.rs/install.sh | sh
