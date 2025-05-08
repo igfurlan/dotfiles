@@ -33,7 +33,8 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 ### Aliases
 alias lt="eza --tree --level=2 --long --icons --git"
-alias ll="ls -l"
+alias ll="ls -lh"
+alias la="eza -lah"
 alias fzfp='fzf -m --preview "batcat --style numbers --color always {}"'
 alias cat="batcat --paging never --style plain"
 alias k="kubectl"
@@ -43,8 +44,16 @@ eval "$(starship init zsh)"
 
 ### Environment variables
 export KUBECONFIG=/home/igfurlan/.kube/config
-
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+### Load zsh plugins
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /home/igfurlan/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /home/linuxbrew/.linuxbrew/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+### To use substring search with up/down arrows
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+
+### Load fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
