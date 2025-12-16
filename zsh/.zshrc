@@ -40,12 +40,14 @@ alias la="eza -lah"
 alias fzfp='fzf -m --preview "bat --style numbers --color always {}"'
 alias cat="bat --paging never --style plain"
 alias k="kubectl"
+alias vi="vim"
 
 ### Load starship
 eval "$(starship init zsh)"
 
 ### Environment variables
 #export KUBECONFIG=/home/ifurlan/.kube/config
+export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export PATH="$HOME/.local/bin:$PATH"
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
