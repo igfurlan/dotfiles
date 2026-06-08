@@ -30,6 +30,11 @@ symbol = " "
 
 [hostname]
 ssh_symbol = " "
+#ssh_only = true
+disabled = true
+
+[username]
+disabled = true
 
 [java]
 symbol = " "
@@ -85,7 +90,7 @@ symbol = " "
 disabled = true
 
 [kubernetes]
-disabled = false
+disabled = true
 #detect_extensions = ['kubectl','oc','kubectx','kubens','k3s']
 symbol = '☸  '
 format = '[$symbol($user in )()](bold blue)'
