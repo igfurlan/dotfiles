@@ -153,18 +153,23 @@ bindkey '^[OB' history-substring-search-down
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 
-# --- OSC leak fix (1/2, cleanup) --------------------------------------------
-# At the first prompt: drain any leaked terminal reply still buffered, then
-# restore echo (runs once). Safe even if startup errored — precmd always fires
-# before the prompt, so echo is never left disabled.
+# --- OSC leak fix (cleanup) --------------------------------------------------
+# echo was disabled in ~/.zshenv. Keep it off through the FIRST prompt (the line
+# editor echoes typing itself, so this is invisible) so a reply that lands right
+# as the prompt appears is still swallowed. Drain the stray reply and wipe any
+# residue on each early prompt, then restore echo once a command runs or by the
+# second prompt — whichever comes first.
 if [[ -o interactive && -n $TMUX ]]; then
   autoload -Uz add-zsh-hook
-  _osc_startup_cleanup() {
+  typeset -gi _osc_prompts=0
+  _osc_restore_echo() { stty echo 2>/dev/null }
+  _osc_precmd() {
     local junk
-    while read -r -k 1 -t 0.1 junk 2>/dev/null; do :; done
-    stty echo 2>/dev/null
-    print -n $'\r\e[2K'   # erase any leaked reply already echoed onto this line
-    add-zsh-hook -d precmd _osc_startup_cleanup
+    while read -r -k 1 -t 0.1 junk 2>/dev/null; do :; done   # drain leaked reply
+    print -n $'\r\e[2K'                                       # wipe echoed residue
+    (( _osc_prompts++ )) && { _osc_restore_echo; add-zsh-hook -d precmd _osc_precmd }
   }
-  add-zsh-hook precmd _osc_startup_cleanup
+  _osc_preexec() { _osc_restore_echo; add-zsh-hook -d preexec _osc_preexec; add-zsh-hook -d precmd _osc_precmd }
+  add-zsh-hook precmd  _osc_precmd
+  add-zsh-hook preexec _osc_preexec
 fi
