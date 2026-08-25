@@ -20,7 +20,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
   "nvim-lua/plenary.nvim",
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  { "nvim-treesitter/nvim-treesitter", branch = "main", build = ":TSUpdate" },
   {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.6",
@@ -34,6 +34,8 @@ local plugins = {
   { "neovim/nvim-lspconfig" },
   { "hrsh7th/cmp-nvim-lsp" },
   { "hrsh7th/nvim-cmp" },
+  { "hrsh7th/cmp-buffer" }, -- the article's cmp.lua uses the `buffer` source but never installs it
+  { "hrsh7th/cmp-path" },
   {
     "L3MON4D3/LuaSnip",
     version = "v2.*",
