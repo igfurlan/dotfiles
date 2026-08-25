@@ -20,6 +20,11 @@ require("mason-lspconfig").setup({
   -- Left empty so startup never blocks on a download; install on demand with
   -- :Mason or :MasonInstall lua-language-server
   ensure_installed = {},
+
+  -- rustaceanvim starts and owns its own rust-analyzer client. If mason also
+  -- enabled rust_analyzer you would get two clients attached to every Rust
+  -- buffer -- duplicate diagnostics, duplicate completions.
+  automatic_enable = { exclude = { "rust_analyzer" } },
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {

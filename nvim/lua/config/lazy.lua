@@ -45,6 +45,26 @@ local plugins = {
   { "mason-org/mason.nvim" },
   { "mason-org/mason-lspconfig.nvim" },
 
+  -- Rust. rustaceanvim manages its own rust-analyzer client -- do NOT also
+  -- enable rust_analyzer via mason (see after/plugin/lsp.lua exclude list).
+  -- The article pins version '^4' and writes `ft = {rust}`; bare `rust` is a nil
+  -- global, so that spec resolves to an empty ft list and never loads.
+  { "mrcjkb/rustaceanvim", version = "^9", lazy = false },
+
+  -- Debug adapter, used by the Rust config below.
+  { "mfussenegger/nvim-dap" },
+
+  -- Go. lsp_cfg = false so gopls is configured once, by mason/lspconfig,
+  -- rather than a second time by go.nvim.
+  {
+    "ray-x/go.nvim",
+    dependencies = { "ray-x/guihua.lua", "neovim/nvim-lspconfig", "nvim-treesitter/nvim-treesitter" },
+    ft = { "go", "gomod" },
+    config = function()
+      require("go").setup({ lsp_cfg = false })
+    end,
+  },
+
   -- Colorschemes
   { "rebelot/kanagawa.nvim" },
   {

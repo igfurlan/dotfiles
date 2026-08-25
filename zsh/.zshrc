@@ -60,7 +60,7 @@ zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' menu select=2
-eval "$(dircolors -b)"
+(( $+commands[dircolors] )) && eval "$(dircolors -b)"
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
@@ -74,7 +74,11 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 # --- Environment & PATH -----------------------------------------------------
 # Homebrew first so $HOMEBREW_PREFIX is available below without re-invoking brew.
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+elif [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 path=("$HOME/.local/bin" "$HOME/.npm-global/bin" $path)
 export PATH
@@ -82,7 +86,7 @@ export PATH
 
 # --- Aliases ----------------------------------------------------------------
 alias lt="eza --tree --level=2 --long --icons --git"
-alias ll="ls -lh"
+alias ll="eza -lh --icons --git"
 alias la="eza -lah"
 alias fzfp='fzf -m --preview "bat --style numbers --color always {}"'
 alias cat="bat --paging never --style plain"
@@ -90,7 +94,7 @@ alias k="kubectl"
 alias vi="vim"
 
 # --- Prompt -----------------------------------------------------------------
-eval "$(starship init zsh)"
+(( $+commands[starship] )) && eval "$(starship init zsh)"
 
 # --- Functions --------------------------------------------------------------
 kdebug() {
@@ -124,7 +128,8 @@ alias restic-checkk8s="sudo bash -c 'source /etc/restic/env.sh && restic check'"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # autosuggestions
-source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+[[ -n $HOMEBREW_PREFIX && -f $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] \
+  && source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # --- OSC leak fix (2/2) -----------------------------------------------------
 # A ZLE widget that eats any OSC reply (ESC ]) that arrives while we're already
@@ -140,10 +145,12 @@ zle -N _zle_eat_osc
 bindkey '\e]' _zle_eat_osc
 
 # syntax highlighting (must be the last highlighter sourced)
-source $HOME/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+[[ -f $HOME/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] \
+  && source $HOME/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # history substring search (must come AFTER syntax-highlighting)
-source $HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+[[ -n $HOMEBREW_PREFIX && -f $HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substring-search.zsh ]] \
+  && source $HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substring-search.zsh
 export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND='fg=default'
 export HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_NOT_FOUND='fg=default'
 bindkey '^[[A' history-substring-search-up

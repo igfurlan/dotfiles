@@ -141,6 +141,10 @@ let light_theme = {
 $env.config = {
     show_banner: false
 
+    # dark_theme is defined at the top of this file but was never applied --
+    # without this line those ~130 lines of theme config did nothing.
+    color_config: $dark_theme
+
     ls: {
         use_ls_colors: true # use the LS_COLORS environment variable to colorize output
         clickable_links: true # enable or disable clickable links. Your terminal has to support links.
@@ -176,17 +180,19 @@ $env.config = {
 
 # Define a custom function for cat
 def cat [file] {
-    batcat --paging never --style plain $file
+    bat --paging never --style plain $file
 }
 
 # Define a custom function for fzfp
 def fzfp [] {
-    fzf -m --preview "batcat --style numbers --color always {}"
+    fzf -m --preview "bat --style numbers --color always {}"
 }
 
 alias lt = eza --tree --level=2 --long --icons --git
-alias ll = ls -l
-alias l = ls --all
+alias ll = eza -lh --icons --git
+alias la = eza -lah --icons --git
 
-source ~/.config/nushell/env.nu
-#use ~/.cache/starship/init.nu 
+# NOTE: nushell already loads env.nu before this file -- `source`-ing it again
+# here re-ran `starship init` and `mkdir` on every shell start. Removed.
+
+use ~/.cache/starship/init.nu
