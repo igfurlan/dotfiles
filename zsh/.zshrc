@@ -111,6 +111,21 @@ ktune() {
 
 alias ktriage='kubectl get events -A --sort-by=".lastTimestamp" | tail -200 | kdebug'
 
+# Rook dev cluster. Points KUBECONFIG at an isolated file so the minikube
+# context never lands in ~/.kube/config next to the kubeadm cluster; kubectl in
+# this shell then targets minikube for the rest of the session. Defaults to
+# 'status'; any minikube subcommand can be passed instead (start, stop, pause).
+rookdev() {
+  export KUBECONFIG=$HOME/.kube/rook-dev.config
+  minikube -p rook "${@:-status}"
+}
+
+# Run ceph/rbd/radosgw-admin in the Rook toolbox. Targets the deployment, not
+# the pod, whose name changes on every operator restart. Run rookdev first.
+# Drop the -t when piping (kubectl errors on a TTY with no terminal attached):
+#   kubectl -n rook-ceph exec -i deploy/rook-ceph-tools -- ceph -s | kdebug
+alias ceph-tool='kubectl -n rook-ceph exec -it deploy/rook-ceph-tools --'
+
 # --- Restic -----------------------------------------------------------------
 alias restic-snaphost="sudo bash -c 'source /etc/restic/env-host.sh && restic snapshots'"
 alias restic-snapk8s="sudo bash -c 'source /etc/restic/env.sh && restic snapshots'"
