@@ -55,11 +55,15 @@ if (( $+commands[kubectl] )); then
   unset _kube_cache
 fi
 
+# gcloud completion (requires compinit above)
+if [[ -f $HOME/google-cloud-sdk/completion.zsh.inc ]]; then
+  source $HOME/google-cloud-sdk/completion.zsh.inc
+fi
+
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' group-name ''
-zstyle ':completion:*' menu select=2
 (( $+commands[dircolors] )) && eval "$(dircolors -b)"
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-colors ''
@@ -80,9 +84,18 @@ elif [[ -x /opt/homebrew/bin/brew ]]; then
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
-path=("$HOME/.local/bin" "$HOME/.npm-global/bin" $path)
+
+# Keep PATH free of duplicates when this file is sourced more than once.
+typeset -gU path
+
+# Google Cloud SDK (adds its bin/ to PATH)
+if [[ -f $HOME/google-cloud-sdk/path.zsh.inc ]]; then
+  source $HOME/google-cloud-sdk/path.zsh.inc
+fi
+
+path=("$HOME/.opencode/bin" "$HOME/.local/bin" "$HOME/.npm-global/bin" $path)
 export PATH
-#export KUBECONFIG=/home/ifurlan/.kube/config
+#export KUBECONFIG=$HOME/.kube/config
 
 # --- Aliases ----------------------------------------------------------------
 alias lt="eza --tree --level=2 --long --icons --git"
@@ -127,7 +140,8 @@ rookdev() {
 alias ceph-tool='kubectl -n rook-ceph exec -it deploy/rook-ceph-tools --'
 
 # --- Restic -----------------------------------------------------------------
-alias restic-snaphost="sudo bash -c 'source /etc/restic/env-host.sh && restic snapshots'"
+alias restic-snaphost="sudo bash -c 'source /etc/restic/env-host.sh && restic snapshots'"   # legacy typo
+alias restic-snapshot="sudo bash -c 'source /etc/restic/env-host.sh && restic snapshots'"   # correct spelling
 alias restic-snapk8s="sudo bash -c 'source /etc/restic/env.sh && restic snapshots'"
 alias restic-checkhost="sudo bash -c 'source /etc/restic/env-host.sh && restic check'"
 alias restic-checkk8s="sudo bash -c 'source /etc/restic/env.sh && restic check'"
