@@ -7,7 +7,12 @@ easily adapted to other distros (swap `dnf` for your package manager).
 The configs live in this repo and are linked into place with **GNU Stow**, so the
 files you edit stay here in git and your home directory just points at them.
 
+> **Minimum:** a Fedora/RHEL/Debian-family distro with `dnf`, `apt` or `yum`,
+> GNU Stow, Neovim **0.11+**, and a Nerd Font.
+
 ![terminal preview](https://github.com/user-attachments/assets/84b041e4-0726-4b06-9105-89b48d051a71)
+
+[![CI](https://github.com/igfurlan/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/igfurlan/dotfiles/actions/workflows/ci.yml)
 
 ---
 
@@ -24,6 +29,11 @@ files you edit stay here in git and your home directory just points at them.
 | `btop/`     | btop system monitor       | `~/.config/btop/`                  |
 | `nushell/`  | Nushell config (optional) | `~/.config/nushell/`               |
 | `scripts/`  | `setup-system.sh` helper  | _(run directly, not linked)_       |
+| `Makefile`  | `install` / `restow` / `unlink` / `check` helpers | _(run `make <target>`)_ |
+
+> `tmux/.tmux.conf.basic` is a minimal fallback config (catppuccin + tpm +
+> tmux-sensible only). Copy it over `.tmux.conf` if you want a plain status bar
+> without the extra plugins.
 
 ---
 
@@ -93,8 +103,9 @@ wget https://github.com/eza-community/eza/releases/download/v0.23.4/eza_x86_64-u
 unzip -o eza_x86_64-unknown-linux-gnu.zip && rm eza_x86_64-unknown-linux-gnu.zip
 mv eza ~/.local/bin/eza && cd ~/dotfiles
 
-# stow — creates the symlinks in step 8
-brew install stow
+# stow — creates the symlinks in step 8 (dnf has it on Fedora)
+sudo dnf install -y stow
+# or: brew install stow
 ```
 
 ### 6. zsh plugins
@@ -126,9 +137,19 @@ git clone --depth 1 https://github.com/morhetz/gruvbox.git ~/.vim/pack/plugins/s
 tmux's plugin manager (tpm) installs itself on first launch — `.tmux.conf`
 bootstraps it, so there's nothing to clone by hand.
 
+> **Neovim 0.11+ is required** (see the Neovim section). If your distro's
+> `neovim` package is older, install a newer build before opening it.
+
 ### 8. Link everything with Stow
 
-Stow needs each target directory to exist first, then it creates the symlinks:
+The bundled `Makefile` wraps the Stow commands:
+
+```bash
+cd ~/dotfiles
+make install
+```
+
+Or do it by hand — Stow needs each target directory to exist first:
 
 ```bash
 cd ~/dotfiles
@@ -143,6 +164,10 @@ stow -t ~/.config/k9s      k9s
 stow -t ~/.config/btop     btop
 stow -t ~/.config/nushell  nushell    # optional — only if you use nushell
 ```
+
+`make restow` re-links packages after you add or remove files, and
+`make check` runs the local syntax checks (plus ShellCheck and Lua parsing when
+those tools are installed).
 
 > **Note:** k9s and btop rewrite their own config files at runtime (on exit, or
 > when you change a setting in the UI). Because those files are symlinks into
@@ -161,7 +186,7 @@ stow -t ~/.config/nushell  nushell    # optional — only if you use nushell
 Run `exec zsh`, or just open a new window. On first launch:
 
 - **tmux** auto-installs its plugins. If the status bar looks plain, press
-  `Ctrl-b` then `I` (capital i) to install them manually.
+  `Ctrl-a` then `I` (capital i) to install them manually.
 - **Neovim** auto-installs its plugins via lazy.nvim, then compiles treesitter
   parsers. The first `nvim` takes 30–60 seconds; after that it's instant.
 
@@ -170,6 +195,13 @@ Run `exec zsh`, or just open a new window. On first launch:
 ## 📝 Neovim
 
 A hand-rolled IDE config (not a distro like LazyVim), managed by **lazy.nvim**.
+
+> **Requires Neovim 0.11+** (developed on 0.12). The config uses
+> `vim.lsp.config()`, `vim.diagnostic.jump()` and the `main` branch of
+> nvim-treesitter. Check with `nvim --version`.
+
+Plugin versions are pinned in `lazy-lock.json`; after pulling a change that
+bumps a pin, run `:Lazy sync`.
 
 ### Layout
 
@@ -194,9 +226,11 @@ nvim/
 | `<leader>ps` | Telescope: grep for a string |
 | `<leader>a` / `Ctrl-e` | Harpoon: mark file / open menu |
 | `Ctrl-h` `Ctrl-t` `Ctrl-n` `Ctrl-s` | Harpoon: jump to marked file 1–4 |
+| `Ctrl-S-p` / `Ctrl-S-n` | Harpoon: previous / next marked file |
 | `<leader>u` | Toggle undotree |
 | `gd` / `K` / `<leader>vrn` | LSP: definition / hover / rename |
 | `<leader>vca` / `<leader>vrr` | LSP: code action / references |
+| `<leader>vws` / `<leader>vd` / `<leader>h` | LSP: workspace symbol / diagnostic float / signature help |
 | `[d` / `]d` | Previous / next diagnostic |
 | `Ctrl-Space` / `Ctrl-y` | Completion: trigger / confirm |
 | `<leader><leader>term` | Open a terminal split |
@@ -288,6 +322,8 @@ Adding a **new** file to an already-stowed package needs a re-stow so the link
 picks it up:
 
 ```bash
+make restow                 # all packages
+# or just one:
 stow -R -t ~/.config/nvim nvim
 ```
 
@@ -307,8 +343,11 @@ To **unlink** a package: `stow -D -t <target> <package>`.
 | `kdebug` | pipe any output to Claude for SRE analysis |
 | `ktriage` | recent cluster events → Claude triage |
 | `ksecure` / `ktune` | cluster security audit / perf review via Claude |
-| `restic-snaphost` / `restic-snapk8s` | list restic snapshots (host / k8s repo) |
+| `restic-snapshot` / `restic-snaphost` | list restic snapshots (host; the misspelled name is kept as an alias) |
+| `restic-snapk8s` | list restic snapshots (k8s repo) |
 | `restic-checkhost` / `restic-checkk8s` | verify those repos |
+| `rookdev` | point `KUBECONFIG` at the minikube `rook` profile |
+| `ceph-tool` | run `ceph`/`rbd` in the Rook toolbox deployment |
 
 ---
 
@@ -317,10 +356,12 @@ To **unlink** a package: `stow -D -t <target> <package>`.
 - **Icons show as boxes (□)** — your terminal isn't set to a Nerd Font. Revisit
   step 3; installing the font isn't enough, you must select it in the terminal's
   settings.
-- **tmux prefix** — `Ctrl-b` (default) or `Ctrl-a` (added as a second prefix).
+- **tmux prefix** — `Ctrl-a` (the primary prefix; the old `Ctrl-b` binding is
+  removed).
 - **tmux plugins not working** — the very last line of `.tmux.conf` must be
   `run '#{TMUX_PLUGIN_MANAGER_PATH}/tpm/tpm'`. Without it tpm downloads the
-  plugins but never loads them. Reload with `Ctrl-b` then `r`, or `tmux kill-server`.
+  plugins but never loads them. Reload with `Ctrl-a` then `r`, or
+  `tmux kill-server`.
 - **Stray `]11;rgb:...` on the prompt in tmux over SSH** — tmux probes the
   terminal's background colour on attach and the reply can land on the prompt.
   `.zshenv` and `.zshrc` contain a three-part guard (marked `OSC leak fix`) that
@@ -337,3 +378,9 @@ To **unlink** a package: `stow -D -t <target> <package>`.
   `:checkhealth vim.provider`.
 - **Nushell** — the config here is kept for future use; nushell itself isn't
   part of the install steps. `sudo dnf install -y nushell`, then stow the package.
+
+---
+
+## 📄 License
+
+[MIT](LICENSE) © Igor Furlan
