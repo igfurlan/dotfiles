@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck zsh lua5.1
+
+      - name: Shell syntax
+        run: |
+          bash -n scripts/setup-system.sh
+          zsh -n zsh/.zshrc zsh/.zshenv
+
+      - name: ShellCheck (errors only)
+        run: shellcheck -S error scripts/setup-system.sh
+
+      - name: Lua syntax
+        run: find nvim -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p

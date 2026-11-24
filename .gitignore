@@ -1,3 +1,12 @@
-/.config/fabric/.env
-/kubeconfig.yaml
-/dotfiles
+# Secrets and machine-local credentials — never commit these.
+.env
+.env.*
+kubeconfig
+kubeconfig.yaml
+*.pem
+*.key
+
+# Editor / OS cruft.
+.DS_Store
+*.swp
+*~
