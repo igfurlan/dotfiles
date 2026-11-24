@@ -15,7 +15,14 @@ vim.opt.shiftwidth = 2
 -- Persistent undo instead of swap/backup files (undotree reads this).
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+-- Persistent undo. Neovim does NOT create 'undodir', so create it first or
+-- undo files are silently never written. Use stdpath("state") instead of
+-- ~/.vim to keep Neovim's own state under ~/.local/state/nvim.
+local undodir = vim.fn.stdpath("state") .. "/undo"
+if vim.fn.isdirectory(undodir) == 0 then
+  vim.fn.mkdir(undodir, "p")
+end
+vim.opt.undodir = undodir
 vim.opt.undofile = true
 
 vim.opt.hlsearch = false

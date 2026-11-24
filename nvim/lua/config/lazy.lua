@@ -23,7 +23,7 @@ local plugins = {
   { "nvim-treesitter/nvim-treesitter", branch = "main", build = ":TSUpdate" },
   {
     "nvim-telescope/telescope.nvim",
-    tag = "0.1.6",
+    tag = "0.1.8",
     dependencies = { "nvim-lua/plenary.nvim" }, -- lazy.nvim uses `dependencies`, not packer's `requires`
   },
   { "ThePrimeagen/harpoon", branch = "harpoon2", dependencies = { "nvim-lua/plenary.nvim" } },
@@ -73,8 +73,9 @@ local plugins = {
     priority = 1000,
     config = function()
       require("catppuccin").setup({
+        -- `flavour` is explicit, so `background` would be ignored; keep one
+        -- source of truth to avoid a silently different theme.
         flavour = "frappe", -- latte, frappe, macchiato, mocha
-        background = { light = "latte", dark = "mocha" },
         transparent_background = true,
         show_end_of_buffer = false,
         term_colors = false,
