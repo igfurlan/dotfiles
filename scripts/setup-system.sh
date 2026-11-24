@@ -37,7 +37,7 @@ confirm() {
         prompt="$prompt (s/N): "
     fi
     
-    read -p "$(echo -e ${YELLOW}${prompt}${NC})" -n 1 -r
+    read -p "$(echo -e "${YELLOW}${prompt}${NC}")" -n 1 -r
     echo
     
     if [ "$default" = "y" ]; then
@@ -102,7 +102,7 @@ update_system() {
             echo ""
             
             log_info "Atualizações disponíveis:"
-            apt list --upgradable 2>/dev/null | grep -v "Listing"
+            apt list --upgradable 2>/dev/null | grep -v "Listing" || true
             echo ""
             
             if confirm "Deseja instalar as atualizações mostradas acima? (apt upgrade)"; then
